@@ -102,3 +102,15 @@ func WithReadingWait(interval time.Duration) ClientConfiguration {
 		c.conn.SetReadingWait(interval)
 	}
 }
+
+func WithReadBufferSize(size int) ClientConfiguration {
+	return func(c *Client) {
+		c.conn.SetReadBufferSize(size)
+	}
+}
+
+func WithWriteBufferSize(size int) ClientConfiguration {
+	return func(c *Client) {
+		c.conn.SetWriteBufferSize(size)
+	}
+}

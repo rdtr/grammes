@@ -44,7 +44,8 @@ type WebSocket struct {
 	readingWait  time.Duration
 	timeout      time.Duration
 	Quit         chan struct{}
-
+	readBufferSize int
+	writeBufferSize int
 	sync.RWMutex
 }
 
@@ -53,9 +54,10 @@ type WebSocket struct {
 // to the given address.
 func (ws *WebSocket) Connect() error {
 	var err error
+
 	dialer := websocket.Dialer{
-		WriteBufferSize:  1024 * 8, // Set up for large messages.
-		ReadBufferSize:   1024 * 8, // Set up for large messages.
+		WriteBufferSize: ws.readBufferSize,
+		ReadBufferSize: ws.writeBufferSize,
 		HandshakeTimeout: 5 * time.Second,
 	}
 
@@ -199,4 +201,21 @@ func (ws *WebSocket) SetWritingWait(interval time.Duration) {
 // SetReadingWait sets how long the reading will wait
 func (ws *WebSocket) SetReadingWait(interval time.Duration) {
 	ws.readingWait = interval
+}
+
+func (ws *WebSocket) SetReadBufferSize(size int) {
+	newSize := size
+	if newSize < 1024 * 8 {
+		newSize = 1024 * 8
+	}
+	ws.readBufferSize = newSize
+}
+
+
+func (ws *WebSocket) SetWriteBufferSize(size int) {
+	newSize := size
+	if newSize < 1024 * 8 {
+		newSize = 1024 * 8
+	}
+	ws.writeBufferSize = newSize	
 }

@@ -50,6 +50,8 @@ type Dialer interface {
 	SetPingInterval(interval time.Duration)
 	SetWritingWait(interval time.Duration)
 	SetReadingWait(interval time.Duration)
+	SetReadBufferSize(size int)
+	SetWriteBufferSize(size int)
 }
 
 // NewWebSocketDialer returns a new WebSocket dialer to use when
@@ -64,6 +66,8 @@ func NewWebSocketDialer(address string) Dialer {
 		readingWait:  15 * time.Second,
 		connected:    false,
 		address:      address,
+		readBufferSize: 1024 * 8,
+		writeBufferSize: 1024 * 8,
 		Quit:         make(chan struct{}),
 	}
 }
